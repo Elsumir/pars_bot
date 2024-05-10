@@ -84,6 +84,5 @@ bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Работаю!');
 });
 
-module.exports = app;
 
 

@@ -1,7 +1,18 @@
 const TelegramBot = require('node-telegram-bot-api');
+const express = require('express');
+const app = express();
 const fs = require('fs');
 let rawdata = fs.readFileSync('my.json');
 let parseddata = JSON.parse(rawdata);
+
+app.get('/', (req, res) => {
+  res.send('Bot is alive');
+});
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
 
 const url =
   'https://1xstavka.ru/LiveFeed/Get1x2_VZip?sports=6&count=50&gr=44&antisports=188&mode=4&country=1&partner=51';
@@ -83,6 +94,8 @@ const bot = new TelegramBot(botToken, { polling: true });
 bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Работаю!');
 });
+
+module.exports = app;
 
 
 

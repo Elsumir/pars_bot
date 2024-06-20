@@ -89,6 +89,12 @@ const searchEvent = () => {
 // res();
 setInterval(searchEvent, 60000);
 
+if (parseddata.length > 100) {
+  const newArr = parseddata.pop();
+  const data = JSON.stringify(newArr);
+  fs.writeFileSync('my.json', data);
+}
+
 const bot = new TelegramBot(botToken, { polling: true });
 
 bot.on('message', (msg) => {

@@ -42,7 +42,7 @@ const searchEvent = async () => {
 
   championship.forEach(async (game) => {
     const { name_ch, id_ch: id } = game;
-    const { stat_link, main, name_ht, name_at } = Object.values(game.evts)[0];
+    const { stat_link, main, name_ht, name_at, id_ev } = Object.values(game.evts)[0];
     const linkStat = `https://betcity.ru/ru/mstat/${stat_link}`;
     const TotalData = await fetch(linkStat).then((res) => res.text());
     const regex = /Тотал (\d+.\d+)/;

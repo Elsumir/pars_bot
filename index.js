@@ -35,56 +35,44 @@ const messageForBot = async (messageText) => {
   console.log('Есть событие!');
 };
 
-const sendTelegramMessage = async (result) => {
-  if (!result) {
-    const messageText = 'Не работаю';
-    messageForBot(messageText);
-  } else {
-    const { id, liga, partyOne, partyTwo, sets } = result;
+const searchEvent = async () => {
+  const data = await fetch(url).then((res) => res.json());
+  const championship = Object.values(data.reply.sports[3].chmps);
+  const seachPercent = 0.9;
+
+  championship.forEach(async (game) => {
+    const { name_ch, id_ch: id } = game;
+    const { stat_link, main, name_ht, name_at } = Object.values(game.evts)[0];
+    const linkStat = `https://betcity.ru/ru/mstat/${stat_link}`;
+    const TotalData = await fetch(linkStat).then((res) => res.text());
+    const regex = /Тотал (\d+.\d+)/;
+    const match = regex.exec(TotalData);
     const noDubl = parseddata.filter((e) => e.id === id).length;
 
-    if (noDubl) {
-      return;
-    }
-    const messageText = `Лига: ${liga} | К1: ${partyOne} | К2: ${partyTwo} | Счет: ${sets}`;
-    messageForBot(messageText);
+    if (match && main && main[72] && !noDubl) {
+      const total = +parseFloat(match[1]);
+      const totalLive = Object.values(main[72]?.data)[0].blocks.T1m.Tot;
+      const absoluteDifference = Math.abs(total - totalLive);
+      const baseNumber = Math.max(total, totalLive);
+      const percentDif = ((absoluteDifference / baseNumber) * 100).toFixed(2);
+      const bet = totalLive < total ? `ТБ ${totalLive}` : `ТМ ${totalLive}`;
+      const message = `${name_ch} 
+      Total ${total}
+      K1: ${name_ht}
+      K2: ${name_at}
+      Разница в ${percentDif}%
+      Ставка ${bet}`;
 
-    await parseddata.push({
-      id,
-    });
-    let data = JSON.stringify(parseddata);
-    fs.writeFileSync('my.json', data);
-  }
-};
-
-const searchEvent = () => {
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      const championship = data.Value.filter((e) => e.L.includes('Женщины'));
-
-      championship.forEach((obj) => {
-        const set = obj.SC.PS.map((e) => e.Value).map((e) => e.S1 + e.S2);
-
-        let over = 0;
-        set.forEach((e) => {
-          e > 44 || over > 1 ? (over += 1) : (over = 0);
-
-          if (over > 1 && set.length < 4) {
-            const result = {
-              id: obj.I,
-              liga: obj.L,
-              partyOne: obj.O1,
-              partyTwo: obj.O2,
-              sets: set,
-            };
-            sendTelegramMessage(result);
-          }
+      if (percentDif > seachPercent) {
+        messageForBot(message);
+        await parseddata.push({
+          id,
         });
-      });
-      console.log('Работаю!');
-    })
-    .catch(() => sendTelegramMessage());
+        let data = JSON.stringify(parseddata);
+        fs.writeFileSync('my.json', data);
+      }
+    }
+  });
 };
 // res();
 setInterval(searchEvent, 60000);

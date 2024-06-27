@@ -15,7 +15,7 @@ app.listen(port, () => {
 });
 
 const url =
-  'https://1xstavka.ru/LiveFeed/Get1x2_VZip?sports=6&count=50&gr=44&antisports=188&mode=4&country=1&partner=51';
+  'https://ad.betcity.ru/d/on_air/bets?rev=8&add=dep_event&ver=364&csn=ooca9s';
 
 const botToken = process.env.BOT;
 const chatId = process.env.CHAT;

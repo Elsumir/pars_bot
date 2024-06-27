@@ -75,7 +75,7 @@ const searchEvent = async () => {
   });
 };
 // res();
-setInterval(searchEvent, 60000);
+setInterval(searchEvent, 20000);
 
 if (parseddata.length > 100) {
   const newArr = parseddata.pop();

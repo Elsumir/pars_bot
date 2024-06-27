@@ -57,7 +57,13 @@ const searchEvent = async () => {
       const baseNumber = Math.max(total, totalLive);
       const percentDif = ((absoluteDifference / baseNumber) * 100).toFixed(2);
       const bet = totalLive < total ? `ТБ ${totalLive}` : `ТМ ${totalLive}`;
-      const message = `${name_ch}/nTotal ${total}/nK1: ${name_ht}/nK2: ${name_at}/nРазница в ${percentDif}%/nСтавка ${bet}/n${urlEvent}`;
+      const message = `${name_ch}
+      Total ${total}
+      K1: ${name_ht}
+      K2: ${name_at}
+      Разница в ${percentDif}%
+      Ставка ${bet}
+      ${urlEvent}`;
 
       if (percentDif > seachPercent) {
         messageForBot(message);

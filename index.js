@@ -48,6 +48,7 @@ const searchEvent = async () => {
     const regex = /Тотал (\d+.\d+)/;
     const match = regex.exec(TotalData);
     const noDubl = parseddata.filter((e) => e.id === id).length;
+    const urlEvent = `https://betcity.ru/ru/live/basketball/${id}/${id_ev}`;
 
     if (match && main && main[72] && !noDubl) {
       const total = +parseFloat(match[1]);
@@ -56,12 +57,7 @@ const searchEvent = async () => {
       const baseNumber = Math.max(total, totalLive);
       const percentDif = ((absoluteDifference / baseNumber) * 100).toFixed(2);
       const bet = totalLive < total ? `ТБ ${totalLive}` : `ТМ ${totalLive}`;
-      const message = `${name_ch} 
-      Total ${total}
-      K1: ${name_ht}
-      K2: ${name_at}
-      Разница в ${percentDif}%
-      Ставка ${bet}`;
+      const message = `${name_ch}/nTotal ${total}/nK1: ${name_ht}/nK2: ${name_at}/nРазница в ${percentDif}%/nСтавка ${bet}/n${urlEvent}`;
 
       if (percentDif > seachPercent) {
         messageForBot(message);

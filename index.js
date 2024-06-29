@@ -38,7 +38,7 @@ const messageForBot = async (messageText) => {
 const searchEvent = async () => {
   const data = await fetch(url).then((res) => res.json());
   const championship = Object.values(data.reply.sports[3].chmps);
-  const seachPercent = 14.9;
+  const seachPercent = 19.9;
 
   championship.forEach(async (game) => {
     const { name_ch, id_ch: id } = game;

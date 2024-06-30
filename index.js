@@ -35,14 +35,17 @@ const messageForBot = async (messageText) => {
   console.log('Есть событие!');
 };
 
-const searchEvent = async () => {
+// разница в процентах от изначального тотала
+const basaketBet = async (url) => {
   const data = await fetch(url).then((res) => res.json());
   const championship = Object.values(data.reply.sports[3].chmps);
-  const seachPercent = 19.9;
+  const seachPercent = 10.9;
 
   championship.forEach(async (game) => {
     const { name_ch, id_ch: id } = game;
-    const { stat_link, main, name_ht, name_at, id_ev } = Object.values(game.evts)[0];
+    const { stat_link, main, name_ht, name_at, id_ev } = Object.values(
+      game.evts
+    )[0];
     const linkStat = `https://betcity.ru/ru/mstat/${stat_link}`;
     const TotalData = await fetch(linkStat).then((res) => res.text());
     const regex = /Тотал (\d+.\d+)/;
@@ -57,13 +60,13 @@ const searchEvent = async () => {
       const baseNumber = Math.max(total, totalLive);
       const percentDif = ((absoluteDifference / baseNumber) * 100).toFixed(2);
       const bet = totalLive < total ? `ТБ ${totalLive}` : `ТМ ${totalLive}`;
-      const message = `${name_ch}
-      Total ${total}
-      K1: ${name_ht}
-      K2: ${name_at}
-      Разница в ${percentDif}%
-      Ставка ${bet}
-      ${urlEvent}`;
+      const message = `${name_ch} 
+        Total ${total}
+        K1: ${name_ht}
+        K2: ${name_at}
+        Разница в ${percentDif}%
+        Ставка ${bet}
+        ${urlEvent}`;
 
       if (percentDif > seachPercent) {
         messageForBot(message);
@@ -76,8 +79,47 @@ const searchEvent = async () => {
     }
   });
 };
-// res();
-setInterval(searchEvent, 20000);
+
+// две партии подряд ТБ45
+const volleyballBet = async (url) => {
+  const data = await fetch(url).then((res) => res.json());
+  const championship = Object.values(data.reply.sports[12].chmps).filter(
+    (games) => games.name_ch.includes('Мужчины')
+  );
+
+  championship.forEach(async (game) => {
+    const { name_ch, id_ch: id } = game;
+    const { sc_ev_cmx, name_ht, name_at, id_ev } = Object.values(game.evts)[0];
+    const sets = sc_ev_cmx.ext.map((set) => +set[0] + +set[1]);
+    const urlEvent = `https://betcity.ru/ru/live/volleyball/${id}/${id_ev}`;
+    const noDubl = parseddata.filter((e) => e.id === id).length;
+    const message = `${name_ch}
+        K1: ${name_ht}
+        K2: ${name_at}
+        ${urlEvent}`;
+
+    over = 0;
+    sets.forEach(async (set) => {
+      set > 44 || over > 1 ? (over += 1) : (over = 0);
+
+      if (over > 1 && sets.length < 4 && !noDubl) {
+        messageForBot(message);
+        await parseddata.push({
+          id,
+        });
+        let data = JSON.stringify(parseddata);
+        fs.writeFileSync('my.json', data);
+      }
+    });
+  });
+};
+
+const pars = async () => {
+  basaketBet(url);
+  volleyballBet(url);
+};
+
+setInterval(pars, 20000);
 
 if (parseddata.length > 100) {
   const newArr = parseddata.pop();

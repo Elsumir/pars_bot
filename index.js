@@ -84,7 +84,7 @@ const basaketBet = async (url) => {
 const volleyballBet = async (url) => {
   const data = await fetch(url).then((res) => res.json());
   const championship = Object.values(data.reply.sports[12].chmps).filter(
-    (games) => games.name_ch.includes('Мужчины')
+    (games) => games.name_ch.includes('Женщины')
   );
 
   championship.forEach(async (game) => {

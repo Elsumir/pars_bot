@@ -119,8 +119,8 @@ const volleyballBet = async (url) => {
 //   volleyballBet(url);
 // };
 
-setInterval(volleyballBet(url), 30000);
-setInterval(basaketBet(url), 60000);
+setInterval(async () => volleyballBet(url), 30000);
+setInterval(async () =>basaketBet(url), 60000);
 
 if (parseddata.length > 100) {
   const newArr = parseddata.pop();

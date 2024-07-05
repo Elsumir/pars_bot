@@ -114,12 +114,13 @@ const volleyballBet = async (url) => {
   });
 };
 
-const pars = async () => {
-  basaketBet(url);
-  volleyballBet(url);
-};
+// const pars = async () => {
+//   basaketBet(url);
+//   volleyballBet(url);
+// };
 
-setInterval(pars, 20000);
+setInterval(volleyballBet(url), 30000);
+setInterval(basaketBet(url), 60000);
 
 if (parseddata.length > 100) {
   const newArr = parseddata.pop();

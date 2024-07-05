@@ -85,12 +85,12 @@ const volleyballBet = async (url) => {
   const data = await fetch(url).then((res) => res.json());
 
   const sports = data.reply.sports;
-  if (!sports || !sports[12]) {
+  if (!sports || !sports[12] || !sports[12].chmps) {
     console.error('Спортивные данные или индекс 12 недействителен.');
     return; 
   }
   
-  const championship = Object.values(sports.chmps).filter(
+  const championship = Object.values(data.reply.sports[12].chmps).filter(
     (games) => games.name_ch.includes('Женщины')
   );
 

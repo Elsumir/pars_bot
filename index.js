@@ -83,7 +83,14 @@ const basaketBet = async (url) => {
 // две партии подряд ТБ45
 const volleyballBet = async (url) => {
   const data = await fetch(url).then((res) => res.json());
-  const championship = Object.values(data.reply.sports[12].chmps).filter(
+
+  const sports = data.reply.sports;
+  if (!sports || !sports[12]) {
+    console.error('Спортивные данные или индекс 12 недействителен.');
+    return; 
+  }
+  
+  const championship = Object.values(sports.chmps).filter(
     (games) => games.name_ch.includes('Женщины')
   );
 
